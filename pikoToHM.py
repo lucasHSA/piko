@@ -25,15 +25,15 @@ from hm import HM
 
 import time
 import sys
-import logging
+import logging, logging.handlers
 
 
 if __name__ == '__main__':
     logger = logging.getLogger()
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     ch = logging.StreamHandler()
-    ch.setLevel(logging.DEBUG)
-    fh = logging.FileHandler('pikoToHM.log')
+    ch.setLevel(logging.INFO)
+    fh = logging.handlers.RotatingFileHandler('pikoToHM.log', maxBytes=1024*1024*512, backupCount=2)
     fh.setLevel(logging.INFO)
     logging.getLogger('urllib3.connectionpool').setLevel(logging.WARNING)
     format = logging.Formatter('%(asctime)s %(levelname)s: %(message)s')
@@ -49,11 +49,20 @@ if __name__ == '__main__':
 
     while(True):
         try:
-            solar_generator_power = p.get_solar_generator_power()
+            current_solar_power = p.get_current_power()
             consumption_phase_1 = p.get_consumption_phase_1()
             consumption_phase_2 = p.get_consumption_phase_2()
             consumption_phase_3 = p.get_consumption_phase_3()
-            remaining_power = solar_generator_power - (consumption_phase_1 + consumption_phase_2 + consumption_phase_3)
+            
+            if current_solar_power < 0:
+                # Piko is off
+                logging.info('Piko is off, going to sleep 10 minutes.')
+                # Set state of homematic
+                hm.set_state(HM_PV_REMAINING_POWER_ID, 0)
+                time.sleep(600)
+                continue
+            
+            remaining_power = current_solar_power - (consumption_phase_1 + consumption_phase_2 + consumption_phase_3)
             
             if remaining_power < 0:
                 remaining_power = 0

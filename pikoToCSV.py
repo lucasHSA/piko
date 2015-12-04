@@ -28,7 +28,7 @@ import csv
 import time
 import sys
 import os.path
-import logging
+import logging, logging.handlers
 
 
 if __name__ == '__main__':
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     logger.setLevel(logging.INFO)
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
-    fh = logging.FileHandler('pikoToCSV.log')
+    fh = logging.handlers.RotatingFileHandler('pikoToCSV.log', maxBytes=1024*1024*512, backupCount=2)
     fh.setLevel(logging.INFO)
     format = logging.Formatter("%(asctime)s %(levelname)s: %(message)s")
     ch.setFormatter(format)
