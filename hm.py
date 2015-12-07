@@ -54,7 +54,7 @@ if __name__ == '__main__':
     logger.addHandler(ch)
     # Get all system variables
     response = requests.get('http://192.168.178.148/config/xmlapi/sysvarlist.cgi')
-    #print(response.text)
+    print(response.text)
     
-    hm = HM("http://192.168.178.148")
-    hm.set_state(12772, 300)
+    #hm = HM("http://192.168.178.148")
+    #hm.set_state(12772, 300)

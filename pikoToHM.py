@@ -46,29 +46,46 @@ if __name__ == '__main__':
     hm = HM('http://192.168.178.148')
     INTERVAL = 30 # seconds
     HM_PV_REMAINING_POWER_ID = 12772
+    HM_PV_STRING_1_POWER_ID = 15241
+    HM_PV_STRING_2_POWER_ID = 15242
 
     while(True):
         try:
+            # Get values for remaining power calculation
             current_solar_power = p.get_current_power()
             consumption_phase_1 = p.get_consumption_phase_1()
             consumption_phase_2 = p.get_consumption_phase_2()
             consumption_phase_3 = p.get_consumption_phase_3()
+            
+            # Get values for string 1 power and string 2 power
+            string1Current = p.get_string1_current()
+            string2Current = p.get_string2_current()
+            string1Voltage = p.get_string1_voltage()
+            string2Voltage = p.get_string2_voltage()
             
             if current_solar_power < 0:
                 # Piko is off
                 logging.info('Piko is off, going to sleep 10 minutes.')
                 # Set state of homematic
                 hm.set_state(HM_PV_REMAINING_POWER_ID, 0)
+                hm.set_state(HM_PV_STRING_1_POWER_ID, 0)
+                hm.set_state(HM_PV_STRING_2_POWER_ID, 0)
                 time.sleep(600)
                 continue
             
-            remaining_power = current_solar_power - (consumption_phase_1 + consumption_phase_2 + consumption_phase_3)
-            
+            # Calculate remaining power
+            remaining_power = round(current_solar_power - (consumption_phase_1 + consumption_phase_2 + consumption_phase_3))
             if remaining_power < 0:
                 remaining_power = 0
+                
+            # Calculate string 1 power and string 2 power
+            string1 = round(string1Current * string1Voltage)
+            string2 = round(string2Current * string2Voltage)
             
             # Set state of homematic
             hm.set_state(HM_PV_REMAINING_POWER_ID, remaining_power)
+            hm.set_state(HM_PV_STRING_1_POWER_ID, string1)
+            hm.set_state(HM_PV_STRING_2_POWER_ID, string2)
 
             logging.debug('Set Homematic state of ' + str(HM_PV_REMAINING_POWER_ID) + ' to ' + str(remaining_power))    
 
