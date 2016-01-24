@@ -26,7 +26,7 @@ import logging
 
 
 class HM():
-    def __init__(self, host='http://192.168.178.30'):
+    def __init__(self, host='http://192.168.178.49'):
         self._host = host
         
     def set_state(self, id, value):
@@ -41,7 +41,7 @@ class HM():
             
         success = root.find("changed")
         if success is not None:
-            logging.debug("Set system variable successfully")
+            logging.debug("Set systemvariable " + str(id) + " successfully to " + str(value))
         
 
 if __name__ == '__main__':
@@ -53,7 +53,7 @@ if __name__ == '__main__':
     ch.setFormatter(format)
     logger.addHandler(ch)
     # Get all system variables
-    response = requests.get('http://192.168.178.148/config/xmlapi/sysvarlist.cgi')
+    response = requests.get('http://192.168.178.49/config/xmlapi/sysvarlist.cgi')
     print(response.text)
     
     #hm = HM("http://192.168.178.148")

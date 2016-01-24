@@ -30,20 +30,21 @@ import logging, logging.handlers
 
 if __name__ == '__main__':
     logger = logging.getLogger()
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     ch = logging.StreamHandler()
     ch.setLevel(logging.INFO)
-    fh = logging.handlers.RotatingFileHandler('pikoToHM.log', maxBytes=1024*1024*512, backupCount=2)
-    fh.setLevel(logging.INFO)
+    fh = logging.handlers.RotatingFileHandler('/home/pi/Desktop/piko/pikoToHM.log', maxBytes=1024*1024*512, backupCount=2)
+    fh.setLevel(logging.DEBUG)
     logging.getLogger('urllib3.connectionpool').setLevel(logging.WARNING)
     format = logging.Formatter('%(asctime)s %(levelname)s: %(message)s')
     ch.setFormatter(format)
+    fh.setFormatter(format)
     logger.addHandler(ch)
     logger.addHandler(fh)
 
     logging.info('Started')
     p = Piko(host='http://192.168.178.123')
-    hm = HM('http://192.168.178.148')
+    hm = HM('http://192.168.178.49')
     INTERVAL = 30 # seconds
     HM_PV_REMAINING_POWER_ID = 12772
     HM_PV_STRING_1_POWER_ID = 15241
@@ -86,11 +87,11 @@ if __name__ == '__main__':
             hm.set_state(HM_PV_REMAINING_POWER_ID, remaining_power)
             hm.set_state(HM_PV_STRING_1_POWER_ID, string1)
             hm.set_state(HM_PV_STRING_2_POWER_ID, string2)
-
-            logging.debug('Set Homematic state of ' + str(HM_PV_REMAINING_POWER_ID) + ' to ' + str(remaining_power))    
-
+            
+            # Sleep
+            time.sleep(INTERVAL)
+            
+        except KeyboardInterrupt:
+            break
         except: # catch *all* exceptions
-            logging.error('Error: ', sys.exc_info()[0])
-
-        # Sleep
-        time.sleep(INTERVAL)
+            logging.exception('Error')
