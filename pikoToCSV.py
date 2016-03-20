@@ -64,8 +64,8 @@ if __name__ == '__main__':
             # Calculate power
             string1 = round(string1Current * string1Voltage)
             string2 = round(string2Current * string2Voltage)
+			
             today = datetime.now()
-
             fileName = 'piko-' + today.strftime('%d-%m-%Y') + '.csv'
 
             if (not os.path.isfile(fileName)):

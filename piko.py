@@ -57,10 +57,10 @@ class Piko():
         password_mgr.add_password(None, url, self.username, self.password)
         handler = urllib.request.HTTPBasicAuthHandler(password_mgr)
         opener = urllib.request.build_opener(handler)
-        opener.open(url)
+        response = opener.open(url)
 
-        urllib.request.install_opener(opener)
-        response = urllib.request.urlopen(url)
+        #urllib.request.install_opener(opener)
+        #response = urllib.request.urlopen(url)
         root = html.fromstring(response.read().strip())
         
         data = []
@@ -144,10 +144,10 @@ class Piko():
         password_mgr.add_password(None, self.host, self.username, self.password)
         handler = urllib.request.HTTPBasicAuthHandler(password_mgr)
         opener = urllib.request.build_opener(handler)
-        opener.open(self.host)
+        response = opener.open(self.host)
 
-        urllib.request.install_opener(opener)
-        response = urllib.request.urlopen(self.host)
+        #urllib.request.install_opener(opener)
+        #response = urllib.request.urlopen(self.host)
         root = html.fromstring(response.read().strip())
         
         data = []
