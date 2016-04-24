@@ -48,6 +48,8 @@ HM_PV_REMAINING_POWER_ID = 12772
 HM_PV_STRING_1_POWER_ID = 15241
 HM_PV_STRING_2_POWER_ID = 15242
 HM_WEATHER_FORECAST_CLOUDS_ID = 20144
+HM_WEATHER_CURRENT_TEMPERATURE_ID = 21442
+HM_WEATHER_FORECAST_TEMPERATURE_ID = 21443
 OWM_API_KEY = 'insert'
 OWM_CITY_ID = 2835477
 
@@ -69,8 +71,8 @@ while(True):
                 # Queries the OWM web API for three hours weather forecast for the specified city ID. 
                 # A Forecaster object is returned, containing a Forecast instance covering a global streak of five days: 
                 # this instance encapsulates Weather objects, with a time interval of three hours one from each other
-                #logging.debug('Calling: owm.three_hours_forecast_at_id')
-                #weather = owm.three_hours_forecast_at_id(OWM_CITY_ID).get_forecast().get(0)
+                logging.debug('Calling: owm.three_hours_forecast_at_id')
+                forecast = owm.three_hours_forecast_at_id(OWM_CITY_ID).get_forecast()
                 
                 # get current weather
                 logging.debug('Calling: owm.weather_at_id')
@@ -80,6 +82,15 @@ while(True):
                 # .get_clouds(): Returns the cloud coverage percentage as an int
                 logging.debug('Calling: set_state HM_WEATHER_FORECAST_CLOUDS_ID')
                 hm.set_state(HM_WEATHER_FORECAST_CLOUDS_ID, weather.get_clouds())
+                
+                # set the current temperature of the weather to homematic
+                # .get_temperature(): Returns a dict with temperature info {'temp': 293.4, 'temp_kf': None, 'temp_max': 297.5, 'temp_min': 290.9}
+                hm.set_state(HM_WEATHER_CURRENT_TEMPERATURE_ID, weather.get_temperature(unit="celsius")["temp"])
+                
+                # set the temperature of the weather in 12 hours to homematic
+                # .get(): Lookups up into the Weather items list for the item at the specified index
+                # .get_temperature(): Returns a dict with temperature info {'temp': 293.4, 'temp_kf': None, 'temp_max': 297.5, 'temp_min': 290.9}
+                hm.set_state(HM_WEATHER_FORECAST_TEMPERATURE_ID, forecast.get(3).get_temperature(unit="celsius")["temp"])
                 
                 # Update last_weather_update time
                 last_weather_update = time.time()
