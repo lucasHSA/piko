@@ -31,7 +31,7 @@ class HM():
         
     def set_state(self, id, value):
         # Change state
-        response = requests.get(self._host + "/config/xmlapi/statechange.cgi?ise_id=" + str(id) + "&new_value=" + str(value))
+        response = requests.get(self._host + "/addons/xmlapi/statechange.cgi?ise_id=" + str(id) + "&new_value=" + str(value))
         root = ET.fromstring(response.text)
         
         # Check response
