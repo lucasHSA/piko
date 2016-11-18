@@ -1,4 +1,6 @@
-﻿# The MIT License (MIT)
+﻿#!/usr/bin/env python3
+
+# The MIT License (MIT)
 #
 # Copyright (c) 2015 Lucas Koegel
 #
@@ -108,8 +110,8 @@ while(True):
         logging.debug('Calling: get_consumption_phase_1')
         consumption_phase_1 = p.get_consumption_phase_1()
         
-        logging.debug('Calling: get_consumption_phase_2')
         consumption_phase_2 = p.get_consumption_phase_2()
+        logging.debug('Calling: get_consumption_phase_2')
         
         logging.debug('Calling: get_consumption_phase_3')
         consumption_phase_3 = p.get_consumption_phase_3()
